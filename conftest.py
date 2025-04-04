@@ -1,6 +1,7 @@
 import pytest
 import logging
 import os
+import http.client as http_client
 from datetime import datetime
 from core.constants import ROOT_WORKING_DIRECTORY, LOGS_FOLDER
 from modules.backend_tests.helpers.helper_asteroids_data import HelperAsteroidData
@@ -14,6 +15,10 @@ def pytest_configure():
     pytest.logger.error("This is an ERROR message")
     pytest.logger.critical("This is a CRITICAL message")
     """
+    # enable HTTP connection logging
+    http_client.HTTPConnection.debuglevel = 0  # Set to 1 for full request/response dumps
+
+    # Create the log folder if it doesn't exist
     log_dir = os.path.join(ROOT_WORKING_DIRECTORY, LOGS_FOLDER)
     os.makedirs(log_dir, exist_ok=True)
 
@@ -41,6 +46,12 @@ def pytest_configure():
         console_handler.setFormatter(console_formatter)
         console_handler.setLevel(logging.DEBUG)
         logger.addHandler(console_handler)
+
+        for ext_logger_name in ["urllib3", "requests", "http.client"]:
+            ext_logger = logging.getLogger(ext_logger_name)
+            ext_logger.setLevel(logging.DEBUG)
+            ext_logger.addHandler(file_handler)
+            ext_logger.propagate = False  # Avoid double logging
 
     pytest.logger = logger
 
