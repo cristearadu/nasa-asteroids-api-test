@@ -248,7 +248,7 @@ def test_combined_date_and_distance_filter(helper_asteroid, label, start, end, d
         )
 
 
-@pytest.mark.load
+@pytest.mark.performance
 @pytest.mark.flaky_regression
 # @pytest.mark.skip(reason="Intentional overloading of the API")
 def test_simulate_rate_limit(helper_asteroid, helper_thread):

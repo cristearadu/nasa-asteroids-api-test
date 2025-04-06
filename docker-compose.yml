@@ -5,4 +5,5 @@ services:
     build: .
     volumes:
       - ./reports:/app/reports
+      - ./output:/app/output
     container_name: asteroids-api-tests

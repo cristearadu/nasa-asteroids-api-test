@@ -1,0 +1,86 @@
+name: Asteroids API Tests
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  schedule:
+    - cron: '0 0 * * *'  # Every night at midnight UTC
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to run tests on"
+        required: true
+        default: "main"
+        type: string
+      test_type:
+        description: "Test suite to run"
+        required: true
+        default: "regression"
+        type: choice
+        options:
+          - smoke
+          - regression
+          - flaky_regression
+          - validation
+          - negative
+          - edgecase
+          - filtering
+          - performance
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    name: Run Docker API Tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref_name }}
+
+      - name: Set up Python (for log timestamps, etc.)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Create reports/output directories
+        run: |
+          mkdir -p reports output
+
+      - name: Build Docker image
+        run: docker build -t asteroid-tests .
+
+      - name: Run tests in Docker container
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/reports:/app/reports \
+            -v ${{ github.workspace }}/output:/app/output \
+            asteroid-tests \
+            sh -c "pytest -n auto -m '${{ github.event.inputs.test_type || 'regression' }}' \
+              --html=reports/report.html \
+              --junitxml=reports/junit.xml \
+              | tee output/$(date +%Y-%m-%dT%H-%M-%S).log"
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: reports/report.html
+
+      - name: Upload JUnit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-report
+          path: reports/junit.xml
+
+      - name: Upload Test Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: output/*.log
