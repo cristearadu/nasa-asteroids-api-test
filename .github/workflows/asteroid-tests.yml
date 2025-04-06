@@ -64,10 +64,12 @@ jobs:
             -v ${{ github.workspace }}/output:/app/output \
             asteroids-api-tests
 
-      - name: Publish Pytest Results to GitHub Test Summary UI
-        uses: actions/upload-test-results@v2
+      - name: Publish JUnit Test Report to GitHub UI
+        uses: mikepenz/action-junit-report@v4
+        if: always()
         with:
-          files: reports/junit.xml
+          report_paths: reports/junit.xml
+          check_name: Asteroid Pytest Results
 
       - name: Upload HTML report with assets
         uses: actions/upload-artifact@v4
