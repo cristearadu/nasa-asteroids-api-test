@@ -1,14 +1,6 @@
 name: Asteroid API Tests
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Every night at 12:00 AM UTC
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       branch:
@@ -17,19 +9,29 @@ on:
         default: "main"
         type: string
       test_type:
-        description: "Test marker to run"
+        description: "Test suite to run"
         required: true
         default: "regression"
         type: choice
         options:
           - smoke
           - regression
-          - flaky_regression
+          - validation
           - negative
           - edgecase
-          - validation
           - filtering
           - performance
+
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  schedule:
+    - cron: "0 0 * * *"  # every night at midnight UTC
 
 jobs:
   run-docker-tests:
