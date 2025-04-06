@@ -11,4 +11,7 @@ ENV PYTHONPATH=/app
 
 RUN mkdir -p reports
 
-CMD ["pytest", "-n", "auto", "-m", "regression", "--html=reports/report.html", "--junitxml=reports/junit.xml"]
+ARG TEST_TYPE=regression
+ENV TEST_TYPE=${TEST_TYPE}
+
+CMD ["sh", "-c", "pytest -n auto -m $TEST_TYPE --html=reports/report.html --junitxml=reports/junit.xml | tee output/$(date +%Y-%m-%dT%H-%M-%S).log"]
