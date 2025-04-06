@@ -101,13 +101,13 @@ Tests run:
 
 ## 🧩 Design Pattern Mapping
 
-| **Pattern**               | **File**                          | **Purpose**                                               |
-|---------------------------|-----------------------------------|-----------------------------------------------------------|
-| **Service Object**        | `helper_asteroids_data.py`        | Encapsulates API usage and logic for fetching asteroid data. |
-| **Builder**               | `request_builder_asteroids.py`    | Dynamically constructs query parameters for test requests. |
-| **Factory (Fixtures)**    | `conftest.py`                     | Generates reusable sample params and setup data.          |
-| **Request Object Model**  | `asteroid_api_controller.py`      | Abstracts NASA endpoint logic into callable methods.      |
-| **Layered Architecture**  | Entire project structure          | Enforces clean separation across test logic, data, and execution. |
+| **Pattern**              | **File**                       | **Purpose**                                                       |
+|--------------------------|--------------------------------|-------------------------------------------------------------------|
+| **Service Object**       | `helper_asteroids_data.py`     | Encapsulates API usage and logic for fetching asteroid data.      |
+| **Builder**              | `request_builder_asteroids.py` | Dynamically constructs query parameters for test requests.        |
+| **Factory (Fixtures)**   | `conftest.py`                  | Generates reusable sample params and setup data.                  |
+| **Request Object Model** | `asteroid_api_controller.py`   | Abstracts NASA endpoint logic into callable methods.              |
+| **Layered Architecture** | Entire project structure       | Enforces clean separation across test logic, data, and execution. |
 
 ### 🔧 Builder Design Explanation
 
@@ -128,7 +128,7 @@ If builder logic grows more complex or shared prebuilt queries are needed, a fix
 | **Test Name**                                   | **Category**        | **File**                          | **Description**                                                                                                 |
 |-------------------------------------------------|----------------------|-----------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | `test_cad_api_smoke_returns_basic_fields`       | Response Basics      | `test_response_basics.py`         | Ensures essential fields exist in the API CAD response                                                          |
-| `test_results_sorted_by_close_approach_date`    | Response Basics      | `test_response_basics.py`         | Verifies results are sorted by close approach date                                                              |
+| `test_results_sorted_by_close_approach_date`    | Response Basics      | `test_close_approach_date.py`      | Verifies results are sorted by close approach date                                                              |
 | `test_smoke_invalid_param_returns_400`          | Error Handling       | `test_errors.py`                  | Checks invalid param returns proper 400 response                                                                |
 | `test_invalid_param`                            | Error Handling       | `test_errors.py`                  | Ensures API catches unrecognized or malformed query parameters                                                  |
 | `test_invalid_queries_return_400`               | Error Handling       | `test_errors.py`                  | Validates the API returns 400 on invalid `date_min`, negative `dist_max` values, and passing string to `v-inf`  |
@@ -148,4 +148,8 @@ If builder logic grows more complex or shared prebuilt queries are needed, a fix
 | `test_filter_only_comets`                       | Object Filtering     | `test_object_type_filters.py`     | Filter to include only comets using kind=c and a valid date range                                               |
 | `test_invalid_kind_value_returns_400`           | Negative             | `test_object_type_filters.py`     | Passing an invalid `kind` param returns HTTP 400 and appropriate error                                          |
 | `test_fullname_parameter_returns_full_names`    | Validation           | `test_output_format.py`           | Validates that `fullname=true` returns extended designations matching the official CAD API format               |
-| `test_diameter_field_included_when_enabled`     | Validation           | `test_output_format.py`           | Ensures `diameter` field is present in results when requested (may be `None` if unknown)                        |
+| `test_diameter_field_included_when_enabled`     | Validation           | `test_output_format.py`           | Ensures `diameter` field is present in results when requested (may be `None` if unknown)                       |
+| `test_close_approach_date_format_is_valid`     | Validation           | `test_close_approach_date.py`      | Validates that all 'cd' (close-approach date) values match the expected NASA format                          |
+| `test_cd_field_is_present_and_not_empty`       | Validation           | `test_close_approach_date.py`      | Ensures every entry contains a non-empty close-approach date field                                           |
+| `test_cd_within_requested_date_range`          | Validation           | `test_close_approach_date.py`      | Confirms all 'cd' values fall within the user-requested date range                                          |
+| `test_cd_values_are_unique`                    | Validation / Smoke   | `test_close_approach_date.py`      | Checks that 'cd' values in the default response are unique                                                  |

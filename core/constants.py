@@ -5,6 +5,7 @@ from enum import Enum, IntEnum
 ROOT_WORKING_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGS_FOLDER = 'output'
 NASA_CLOSE_APPROACH_DATE_FORMAT = "%Y-%b-%d %H:%M"
+DATE_FORMAT_ISO = "%Y-%m-%d"
 
 
 class HTTPStatusCodes(Enum):
@@ -23,19 +24,19 @@ class ResponseKeys(Enum):
 
 
 class AsteroidDataFields(IntEnum):
-    DES = 0         # Designation
-    ORB = 1         # Orbit ID
+    DES = 0              # Designation
+    ORB = 1              # Orbit ID
     JD = 2               # Julian Date
     CD = 3               # Close-Approach Date (formatted)
     DIST = 4             # Nominal approach distance (au)
     DIST_MIN = 5         # Minimum possible distance (au)
     DIST_MAX = 6         # Maximum possible distance (au)
     V_REL = 7            # Relative velocity (km/s)
-    V_INF = 8            # Velocity relative to Earth (km/s)
+    V_INF = 8            # Velocity-infinity (km/s)
     T_SIGMA_F = 9        # Time uncertainty
     H = 10               # Absolute magnitude
-    DIAMETER = 11        # Estimated diameter (may be None)
-    DIAMETER_SIGMA = 12  # Uncertainty in diameter
+    DIAMETER = 11        # Estimated diameter (if requested)
+    DIAMETER_SIGMA = 12  # Uncertainty in diameter estimate
 
 
 class KindValues(str, Enum):
