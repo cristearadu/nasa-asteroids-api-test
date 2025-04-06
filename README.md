@@ -146,5 +146,6 @@ If builder logic grows more complex or shared prebuilt queries are needed, a fix
 | `test_filter_only_planets`                         | Object Filtering     | `test_object_type_filters.py`     | Verify kind=p returns 400 since planets are not supported             |
 | `test_filter_only_comets`                          | Object Filtering     | `test_object_type_filters.py`     | Filter to include only comets using kind=c and a valid date range     |
 | `test_invalid_kind_value_returns_400`              | Negative             | `test_object_type_filters.py`     | Passing an invalid `kind` param returns HTTP 400 and appropriate error|
-
+| `test_fullname_parameter_returns_full_names`       | Validation           | `test_output_format.py`           | Validates that `fullname=true` returns extended designations matching the official CAD API format |
+| `test_diameter_field_included_when_enabled`        | Validation           | `test_output_format.py`           | Ensures `diameter` field is present in results when requested (may be `None` if unknown)          |
 ---

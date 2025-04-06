@@ -27,7 +27,7 @@ def test_smoke_invalid_param_returns_400(helper_asteroid, faker_fixture):
 
 
 @pytest.mark.flaky_regression
-@pytest.mark.negativedocker
+@pytest.mark.negative
 @pytest.mark.parametrize("label, param, expected_error", INVALID_PARAMS)
 def test_invalid_param(helper_asteroid, label, param, expected_error):
     """Check that invalid parameters return proper error messages."""
