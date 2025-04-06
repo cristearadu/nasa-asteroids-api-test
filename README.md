@@ -109,9 +109,21 @@ Tests run:
 | **Request Object Model**  | `asteroid_api_controller.py`      | Abstracts NASA endpoint logic into callable methods.      |
 | **Layered Architecture**  | Entire project structure          | Enforces clean separation across test logic, data, and execution. |
 
+### 🔧 Builder Design Explanation
+
+The `AsteroidRequestBuilder()` is used as a **chainable query builder**, not a fixture.
+This decision was made to:
+- Keep test logic self-contained and explicit
+- Allow full customization per test
+- Avoid unnecessary shared state
+
+Although fixtures could simplify usage in some scenarios, using `AsteroidRequestBuilder()` inline keeps the test intention clear. It is lightweight and does not require shared setup, so it's safe to instantiate in each test.
+
+If builder logic grows more complex or shared prebuilt queries are needed, a fixture could be introduced in `conftest.py`.
+
 ---
 
-## 🧪 Test Suite Overview
+## 📊 Test Suite Overview
 
 | **Test Name**                                      | **Category**        | **File**                    | **Description**                                                        |
 |----------------------------------------------------|----------------------|-----------------------------|------------------------------------------------------------------------|
@@ -122,9 +134,13 @@ Tests run:
 | `test_response_schema`                             | Schema Validation    | `test_schema.py`            | Validates response JSON matches expected schema                       |
 | `test_data_fields_have_expected_types`             | Schema Validation    | `test_schema.py`            | Asserts each field type matches its defined type                      |
 | `test_simulate_rate_limit`                         | Performance          | `test_performance.py`       | Simulates burst traffic to confirm rate limiting behavior             |
-| `test_smoke_valid_date_filter_returns_data`        | Filtering            | `test_filtering.py`         | Ensures valid date range returns expected asteroids                  |
+| `test_smoke_valid_date_filter_returns_data`        | Filtering            | `test_filtering.py`         | Ensures valid date range returns expected asteroids                   |
 | `test_filter_by_distance`                          | Filtering            | `test_filtering.py`         | Verifies asteroid filtering by max distance                           |
 | `test_combined_date_and_distance_filter`           | Filtering            | `test_filtering.py`         | Combines filters to ensure cross-parameter functionality              |
+| `test_filter_by_min_distance`                      | Filtering            | `test_filtering.py`         | Ensure results contain only entries with distance ≥ 0.1 AU.         |
+| `test_filter_by_distance_range`                    | Filtering            | `test_filtering.py`         | Ensure results fall within specified min/max distance boundaries.     |
+| `test_filter_by_absolute_magnitude_upper_bound`    | Filtering            | `test_filtering.py`         | Filter objects with absolute magnitude ≤ 22.                      |
+| `test_filter_by_velocity_upper_bound`              | Filtering            | `test_filtering.py`         | Ensure filtered objects have v-inf ≤ 5 km/s.                      |
 | `test_edge_case_no_data`                           | Edge Case            | `test_edgecases.py`         | Confirms the API handles far future dates without failure             |
 | `test_empty_ranges_return_no_data`                 | Edge Case            | `test_edgecases.py`         | Checks that no data is returned for truly empty valid date ranges     |
 
