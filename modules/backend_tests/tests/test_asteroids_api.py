@@ -22,6 +22,7 @@ def test_cad_api_smoke_returns_basic_fields(helper_asteroid):
 
 
 @pytest.mark.smoke
+@pytest.mark.filtering
 @pytest.mark.flaky_regression
 @pytest.mark.parametrize("label, start, end, has_data", DATE_RANGES)
 def test_smoke_valid_date_filter_returns_data(helper_asteroid, label, start, end, has_data):
@@ -51,6 +52,7 @@ def test_smoke_valid_date_filter_returns_data(helper_asteroid, label, start, end
 
 
 @pytest.mark.smoke
+@pytest.mark.negative
 @pytest.mark.flaky_regression
 def test_smoke_invalid_param_returns_400(helper_asteroid, faker_fixture):
     """

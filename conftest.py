@@ -69,6 +69,17 @@ def pytest_runtest_call(item):
         pytest.logger.info(f"\nRunning Test: {item.name}\n{test_docstring.strip()}\n")
 
 
+def pytest_collection_modifyitems(session, config, items):
+    """
+    Ensures that smoke tests run first in any test run.
+    """
+    smoke_tests = [item for item in items if "smoke" in item.keywords]
+    other_tests = [item for item in items if "smoke" not in item.keywords]
+
+    # Reorder items: smoke tests first
+    items[:] = smoke_tests + other_tests
+
+
 @pytest.fixture
 def helper_asteroid():
     return HelperAsteroidData()
