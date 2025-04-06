@@ -1,5 +1,9 @@
 name: Asteroid API Tests
 
+permissions:
+  checks: write
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -38,10 +42,6 @@ jobs:
     name: Run Docker API Tests
     runs-on: ubuntu-latest
 
-    permissions:
-      checks: write
-      contents: read
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,14 +64,10 @@ jobs:
             -v ${{ github.workspace }}/output:/app/output \
             asteroids-api-tests
 
-      - name: Publish Pytest Results to GitHub UI
-        uses: dorny/test-reporter@v1
+      - name: Publish Pytest Results to GitHub Test Summary UI
+        uses: actions/upload-test-results@v2
         with:
-          name: Asteroid Pytest Report
-          path: reports/junit.xml
-          reporter: java-junit
-          fail-on-error: false
-          only-summary: false
+          files: reports/junit.xml
 
       - name: Upload HTML report with assets
         uses: actions/upload-artifact@v4
