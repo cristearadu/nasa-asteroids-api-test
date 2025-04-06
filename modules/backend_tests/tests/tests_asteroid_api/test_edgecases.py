@@ -1,8 +1,7 @@
 import pytest
 
 from core import ResponseKeys
-from modules.backend_tests.general.request_builder_asteroids import AsteroidRequestBuilder
-from modules.backend_tests.tests.tests_asteroid_api.test_data import EMPTY_DATE_RANGES
+from modules.backend_tests import AsteroidRequestBuilder, EMPTY_DATE_RANGES
 
 
 @pytest.mark.flaky_regression

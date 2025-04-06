@@ -1,7 +1,6 @@
 import pytest
 
-from modules.backend_tests.tests.tests_asteroid_api.test_data import *
-from modules.backend_tests import AsteroidRequestBuilder
+from modules.backend_tests import AsteroidRequestBuilder, VALID_SORTING_DATES
 from core import ResponseKeys, AsteroidDataFields, NASA_CLOSE_APPROACH_DATE_FORMAT
 from datetime import datetime
 
