@@ -71,6 +71,7 @@ jobs:
           path: reports/junit.xml
           reporter: java-junit
           fail-on-error: false
+          only-summary: false
 
       - name: Upload HTML report with assets
         uses: actions/upload-artifact@v4
