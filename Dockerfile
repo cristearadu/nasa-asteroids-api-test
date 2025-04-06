@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -7,4 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["pytest"]
+ENV PYTHONPATH=/app
+
+RUN mkdir -p reports
+
+CMD ["pytest", "-n", "auto", "-m", "regression", "--html=reports/report.html", "--junitxml=reports/junit.xml"]

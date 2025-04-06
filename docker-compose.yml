@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  test-runner:
+    build: .
+    volumes:
+      - ./reports:/app/reports
+    container_name: asteroids-api-tests

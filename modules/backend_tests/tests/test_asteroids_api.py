@@ -1,6 +1,6 @@
 import pytest
 
-from test_data import *
+from modules.backend_tests.tests.test_data import *
 from modules.backend_tests import AsteroidRequestBuilder
 from core import HTTPStatusCodes, ResponseKeys, ASTEROID_API_SCHEMA, AsteroidDataFields, NASA_CLOSE_APPROACH_DATE_FORMAT
 from datetime import datetime
