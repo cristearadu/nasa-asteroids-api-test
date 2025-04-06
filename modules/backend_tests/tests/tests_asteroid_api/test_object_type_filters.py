@@ -1,10 +1,7 @@
 import pytest
 
-from modules.backend_tests import AsteroidRequestBuilder
+from modules.backend_tests import AsteroidRequestBuilder, DATE_RANGES
 from core import ResponseKeys, KindValues
-from modules.backend_tests.tests.tests_asteroid_api.test_data import (
-    DATE_RANGES
-)
 
 
 @pytest.mark.negative

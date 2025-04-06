@@ -52,3 +52,21 @@ MIN_DISTANCE_VALUES = [
     ("min dist = 0.1 AU", "0.1"),
     ("min dist = 0.05 AU", "0.05")
 ]
+
+INVALID_QUERIES_WITH_EXPECTED_MSG = [
+    (
+        "Invalid date format",
+        {"date_min": "01-01-2025"},
+        "query parameter was not recognized"
+    ),
+    (
+        "Negative distance value",
+        {"dist_max": "-1"},
+        "query parameter was not recognized"
+    ),
+    (
+        "Non-numeric velocity",
+        {"v_inf": "fast"},
+        "query parameter was not recognized"
+    ),
+]

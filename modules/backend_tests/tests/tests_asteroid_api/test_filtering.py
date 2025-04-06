@@ -1,8 +1,8 @@
 import pytest
 
 from core import ResponseKeys, AsteroidDataFields
-from modules.backend_tests import AsteroidRequestBuilder
-from modules.backend_tests.tests.tests_asteroid_api.test_data import (
+from modules.backend_tests import (
+    AsteroidRequestBuilder,
     DATE_RANGES,
     DISTANCES,
     COMBINED_DATA_AND_DISTANCE,

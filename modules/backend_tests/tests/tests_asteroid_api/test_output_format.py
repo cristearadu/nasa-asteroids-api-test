@@ -1,11 +1,8 @@
 import pytest
 import re
 
-from modules.backend_tests import AsteroidRequestBuilder
+from modules.backend_tests import AsteroidRequestBuilder, VALID_DATA_TYPES_DATES
 from core import ResponseKeys, AsteroidDataFields, FULLNAME_REGEX_PATTERN
-from modules.backend_tests.tests.tests_asteroid_api.test_data import (
-    VALID_DATA_TYPES_DATES
-)
 
 
 @pytest.mark.validation

@@ -1,7 +1,7 @@
 import pytest
 
 from core import HTTPStatusCodes, ResponseKeys
-from modules.backend_tests.tests.tests_asteroid_api.test_data import INVALID_PARAMS
+from modules.backend_tests import INVALID_PARAMS, INVALID_QUERIES_WITH_EXPECTED_MSG
 
 
 @pytest.mark.smoke
@@ -26,8 +26,8 @@ def test_smoke_invalid_param_returns_400(helper_asteroid, faker_fixture):
     pytest.logger.info("Proper error message returned for invalid param.")
 
 
-@pytest.mark.flaky_regression
 @pytest.mark.negative
+@pytest.mark.flaky_regression
 @pytest.mark.parametrize("label, param, expected_error", INVALID_PARAMS)
 def test_invalid_param(helper_asteroid, label, param, expected_error):
     """Check that invalid parameters return proper error messages."""
@@ -43,3 +43,14 @@ def test_invalid_param(helper_asteroid, label, param, expected_error):
 
     assert expected_error in message
     pytest.logger.info(f"[{label}] Invalid param correctly returned expected error message.")
+
+
+@pytest.mark.negative
+@pytest.mark.flaky_regression
+@pytest.mark.parametrize("label, query_params, expected_msg", INVALID_QUERIES_WITH_EXPECTED_MSG)
+def test_invalid_queries_return_400(helper_asteroid, label, query_params, expected_msg):
+    """Negative tests for invalid query parameter combinations resulting in 400 response."""
+    pytest.logger.warning(f"[{label}] Sending: {query_params}")
+    result = helper_asteroid.fetch_data(expected_status_code=400, **query_params)
+    message = result.get("message", "").lower()
+    assert expected_msg.lower() in message
