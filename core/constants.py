@@ -1,6 +1,7 @@
 import os
 from enum import Enum, IntEnum
-
+from typing import Optional, Union
+from pydantic import BaseModel
 
 ROOT_WORKING_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGS_FOLDER = 'output'
@@ -47,13 +48,53 @@ class KindValues(str, Enum):
 
 ASTEROID_API_SCHEMA = {
     "type": "object",
+    "required": [
+        ResponseKeys.COUNT.value,
+        ResponseKeys.DATA.value,
+        ResponseKeys.SIGNATURE.value
+    ],
     "properties": {
         ResponseKeys.COUNT.value: {"type": "integer"},
-        ResponseKeys.DATA.value: {"type": "array"},
-        ResponseKeys.SIGNATURE.value: {"type": "object"},
-    },
-    "required": [ResponseKeys.COUNT.value, ResponseKeys.SIGNATURE.value]
+        ResponseKeys.DATA.value: {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "anyOf": [
+                        {"type": "string"},
+                        {"type": "number"},
+                        {"type": "null"}
+                    ]
+                }
+            }
+        },
+        ResponseKeys.SIGNATURE.value: {
+            "type": "object",
+            "required": ["version", "source"],
+            "properties": {
+                "version": {"type": "string"},
+                "source": {"type": "string"}
+            }
+        }
+    }
 }
+
+
+class CadEntry(BaseModel):
+    des: str
+    orbit_id: str
+    jd: Union[str, float]
+    cd: str
+    dist: str
+    dist_min: str
+    dist_max: str
+    v_rel: str
+    v_inf: str
+    t_sigma_f: str
+    h: str
+    diameter: Optional[float] = None
+    diameter_sigma: Optional[float] = None
+
 
 # Pattern to match fullname field, e.g., '       (2024 AV2)' or '(433 Eros)'
 FULLNAME_REGEX_PATTERN = r".*(\([^\)]+\))?$"
