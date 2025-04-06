@@ -34,12 +34,18 @@ class AsteroidDataFields(IntEnum):
     H = 8           # Absolute magnitude
 
 
+class KindValues(str, Enum):
+    ASTEROID = "a"
+    COMET = "c"
+    PLANET = "p"  # currently unsupported, returns 400
+
+
 ASTEROID_API_SCHEMA = {
     "type": "object",
     "properties": {
-        "count": {"type": "integer"},
-        "data": {"type": "array"},
-        "signature": {"type": "object"},
+        ResponseKeys.COUNT.value: {"type": "integer"},
+        ResponseKeys.DATA.value: {"type": "array"},
+        ResponseKeys.SIGNATURE.value: {"type": "object"},
     },
-    "required": ["count", "signature"]
+    "required": [ResponseKeys.COUNT.value, ResponseKeys.SIGNATURE.value]
 }

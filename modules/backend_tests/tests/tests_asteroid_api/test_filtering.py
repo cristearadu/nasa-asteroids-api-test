@@ -108,10 +108,10 @@ def test_filter_by_min_distance(helper_asteroid, label, dist_min):
     result = helper_asteroid.fetch_data(**params)
 
     pytest.logger.debug(f"Response received: {result}")
-    assert "count" in result
-    assert result["count"] >= 0
+    assert ResponseKeys.COUNT.value in result
+    assert result[ResponseKeys.COUNT.value] >= 0
 
-    if result["count"] > 0:
+    if result[ResponseKeys.COUNT.value] > 0:
         assert ResponseKeys.DATA.value in result
         for entry in result[ResponseKeys.DATA.value]:
             dist = float(entry[AsteroidDataFields.DIST])
