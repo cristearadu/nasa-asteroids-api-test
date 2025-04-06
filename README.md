@@ -1,2 +1,131 @@
-# Asteroids API Tests
+# 🛰️ NASA Asteroids API – Automated Test Suite
 
+![CI](https://github.com/cristearadu/nasa-asteroids-api-test/actions/workflows/asteroid-tests.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.10-blue)
+
+---
+
+## ✅ Key Features
+
+- 🔁 Automated nightly regression runs
+- ⚙️ Manual trigger for smoke, edge cases, performance, filtering, etc.
+- 🐳 Dockerized testing with mounted reports and logs
+- 📊 Generates HTML + JUnit reports and GitHub summary (pass/fail circle view)
+- 📦 Uploads test logs and artifacts on every run
+- 🔎 Categorized test structure using `pytest.mark`
+- ♻️ Retry for flaky tests
+- 📁 Easy-to-navigate folder structure
+
+---
+
+## 🧰 Tech Stack
+
+- Python 3.10
+- Pytest + plugins
+- Docker
+- GitHub Actions
+
+---
+
+## 🚀 Getting Started
+
+### 📦 Install Dependencies
+
+```bash
+docker build --build-arg TEST_TYPE=regression -t asteroids-api-tests .
+
+docker run --rm \
+  -e TEST_TYPE=regression \
+  -v $(pwd)/reports:/app/reports \
+  -v $(pwd)/output:/app/output \
+  asteroids-api-tests
+```
+
+### Option 2: 🧪 Local (dev use only)
+
+```bash
+pip install -r requirements.txt
+
+pytest -m regression \
+  --html=reports/report.html \
+  --junitxml=reports/junit.xml
+```
+
+### ▶️ Run Tests
+
+```bash
+pytest -n auto -m regression --html=reports/report.html --junitxml=reports/junit.xml
+```
+
+To run a specific suite:
+
+```bash
+pytest -m smoke
+```
+
+---
+
+## 🛠️ Markers Used
+
+```ini
+markers =
+    smoke: Smoke tests suite to ensure API works as expected
+    regression: Tests that should run in every regression/nightly cycle
+    flaky_regression: Rerun flaky tests 3 times
+    negative: Tests for invalid inputs and unexpected API behavior
+    edgecase: Outlier conditions like extreme future date ranges
+    validation: Type checking, field format validation
+    filtering: Tests focused on query filters like date or distance
+    performance: Simulated high-load or stress scenarios like rate limiting
+```
+
+---
+
+## ⚙️ GitHub Actions
+
+### Triggering
+
+Tests run:
+- ✅ On `push` to `main`
+- ✅ On `pull_request` to `main`
+- ✅ Every night at midnight (UTC)
+- ✅ Manually (with selectable test marker)
+
+### Outputs
+
+- 🧪 GitHub test summary (pass/fail chart)
+- 📄 JUnit and HTML reports
+- 📁 Logs for each run
+
+---
+
+## 🧩 Design Pattern Mapping
+
+| **Pattern**               | **File**                          | **Purpose**                                               |
+|---------------------------|-----------------------------------|-----------------------------------------------------------|
+| **Service Object**        | `helper_asteroids_data.py`        | Encapsulates API usage and logic for fetching asteroid data. |
+| **Builder**               | `request_builder_asteroids.py`    | Dynamically constructs query parameters for test requests. |
+| **Factory (Fixtures)**    | `conftest.py`                     | Generates reusable sample params and setup data.          |
+| **Request Object Model**  | `asteroid_api_controller.py`      | Abstracts NASA endpoint logic into callable methods.      |
+| **Layered Architecture**  | Entire project structure          | Enforces clean separation across test logic, data, and execution. |
+
+---
+
+## 🧪 Test Suite Overview
+
+| **Test Name**                                      | **Category**        | **File**                    | **Description**                                                        |
+|----------------------------------------------------|----------------------|-----------------------------|------------------------------------------------------------------------|
+| `test_cad_api_smoke_returns_basic_fields`          | Response Basics      | `test_response_basics.py`   | Ensures essential fields exist in the API CAD response                |
+| `test_results_sorted_by_close_approach_date`       | Response Basics      | `test_response_basics.py`   | Verifies results are sorted by close approach date                    |
+| `test_smoke_invalid_param_returns_400`             | Error Handling       | `test_errors.py`            | Checks invalid param returns proper 400 response                      |
+| `test_invalid_param`                               | Error Handling       | `test_errors.py`            | Ensures API catches unrecognized or malformed query parameters        |
+| `test_response_schema`                             | Schema Validation    | `test_schema.py`            | Validates response JSON matches expected schema                       |
+| `test_data_fields_have_expected_types`             | Schema Validation    | `test_schema.py`            | Asserts each field type matches its defined type                      |
+| `test_simulate_rate_limit`                         | Performance          | `test_performance.py`       | Simulates burst traffic to confirm rate limiting behavior             |
+| `test_smoke_valid_date_filter_returns_data`        | Filtering            | `test_filtering.py`         | Ensures valid date range returns expected asteroids                  |
+| `test_filter_by_distance`                          | Filtering            | `test_filtering.py`         | Verifies asteroid filtering by max distance                           |
+| `test_combined_date_and_distance_filter`           | Filtering            | `test_filtering.py`         | Combines filters to ensure cross-parameter functionality              |
+| `test_edge_case_no_data`                           | Edge Case            | `test_edgecases.py`         | Confirms the API handles far future dates without failure             |
+| `test_empty_ranges_return_no_data`                 | Edge Case            | `test_edgecases.py`         | Checks that no data is returned for truly empty valid date ranges     |
+
+---
