@@ -153,3 +153,15 @@ If builder logic grows more complex or shared prebuilt queries are needed, a fix
 | `test_cd_field_is_present_and_not_empty`       | Validation           | `test_close_approach_date.py`      | Ensures every entry contains a non-empty close-approach date field                                           |
 | `test_cd_within_requested_date_range`          | Validation           | `test_close_approach_date.py`      | Confirms all 'cd' values fall within the user-requested date range                                          |
 | `test_cd_values_are_unique`                    | Validation / Smoke   | `test_close_approach_date.py`      | Checks that 'cd' values in the default response are unique                                                  |
+
+---
+
+## 📸 Report Previews
+
+Below is a preview of the generated test report and GitHub summary:
+
+| HTML Report (Full View)                 | Logs File                   | GitHub Actions Summary View                      |
+|-----------------------------------------|-----------------------------|--------------------------------------------------|
+| ![HTML Report](html-report-sample.png)  | ![Logs File](logs-file.png) | ![GitHub Summary](gh-summary-badge.png) |
+
+> Reports are auto-generated for every run via GitHub Actions and saved to `reports/` and `output/` folders.
