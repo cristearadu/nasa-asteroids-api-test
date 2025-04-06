@@ -1,7 +1,7 @@
 import pytest
 
 from core import ResponseKeys, AsteroidDataFields
-from modules.backend_tests.general.request_builder_asteroids import AsteroidRequestBuilder
+from modules.backend_tests import AsteroidRequestBuilder
 from modules.backend_tests.tests.tests_asteroid_api.test_data import DATE_RANGES, DISTANCES, COMBINED_DATA_AND_DISTANCE
 
 
@@ -88,3 +88,57 @@ def test_combined_date_and_distance_filter(helper_asteroid, label, start, end, d
         assert approach_distance <= max_dist, (
             f"Entry {i} exceeds max distance: {approach_distance} > {max_dist} (entry: {entry})"
         )
+
+
+@pytest.mark.filtering
+@pytest.mark.flaky_regression
+def test_filter_by_min_distance(helper_asteroid):
+    """Ensure API correctly filters results with minimum distance ≥ 0.1 AU."""
+    pytest.logger.info("Filtering by dist-min = 0.1 AU")
+
+    params = AsteroidRequestBuilder().with_dist_min("0.1").build()
+    result = helper_asteroid.fetch_data(**params)
+
+    pytest.logger.debug(f"Response received: {result}")
+
+    assert "count" in result
+    assert result["count"] >= 0  # could be 0 or more
+
+    if result["count"] > 0:
+        assert ResponseKeys.DATA.value in result
+        for entry in result[ResponseKeys.DATA.value]:
+            dist = float(entry[AsteroidDataFields.DIST])
+            assert dist >= 0.1
+
+
+@pytest.mark.filtering
+@pytest.mark.flaky_regression
+def test_filter_by_distance_range(helper_asteroid):
+    """Verify results fall within distance range 0.01 - 0.05 AU."""
+    pytest.logger.info("Filtering by dist-min=0.01 and dist-max=0.05")
+    params = AsteroidRequestBuilder().with_dist_range("0.01", "0.05").build()
+    result = helper_asteroid.fetch_data(**params)
+    for entry in result.get(ResponseKeys.DATA.value, []):
+        dist = float(entry[AsteroidDataFields.DIST])
+        assert 0.01 <= dist <= 0.05
+
+
+@pytest.mark.filtering
+@pytest.mark.flaky_regression
+def test_filter_by_absolute_magnitude_upper_bound(helper_asteroid):
+    """Filter objects with absolute magnitude ≤ 22."""
+    pytest.logger.info("Filtering by h <= 22")
+    params = AsteroidRequestBuilder().with_h_max("22").build()
+    result = helper_asteroid.fetch_data(**params)
+    assert ResponseKeys.DATA.value in result
+
+
+@pytest.mark.filtering
+@pytest.mark.flaky_regression
+def test_filter_by_velocity_upper_bound(helper_asteroid):
+    """Ensure filtered objects have v-inf ≤ 5 km/s."""
+    pytest.logger.info("Filtering by v-inf <= 5 km/s")
+    params = AsteroidRequestBuilder().with_v_inf_max("5").build()
+    result = helper_asteroid.fetch_data(**params)
+    for entry in result.get(ResponseKeys.DATA.value, []):
+        assert float(entry[AsteroidDataFields.V_REL]) <= 5

@@ -2,7 +2,7 @@ import pytest
 from jsonschema import validate, ValidationError
 
 from core import ASTEROID_API_SCHEMA, ResponseKeys, AsteroidDataFields
-from modules.backend_tests.general.request_builder_asteroids import AsteroidRequestBuilder
+from modules.backend_tests import AsteroidRequestBuilder
 from modules.backend_tests.tests.tests_asteroid_api.test_data import VALID_DATA_TYPES_DATES
 
 
