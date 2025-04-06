@@ -1,3 +1,7 @@
 pytest
 pytest-html
 requests
+pytest-xdist
+pytest-rerunfailures
+jsonschema
+faker

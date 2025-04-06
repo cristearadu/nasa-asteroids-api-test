@@ -1,4 +1,4 @@
-from core.request_builder import get_request
+from core import get_request
 
 
 class AsteroidAPIController:

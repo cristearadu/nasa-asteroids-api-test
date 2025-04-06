@@ -26,3 +26,8 @@ EMPTY_DATE_RANGES = [
 VALID_DATA_TYPES_DATES = [
     ("Field validation range", "2024-01-01", "2024-01-10")
 ]
+
+COMBINED_DATA_AND_DISTANCE = [
+    ("Combined filter short range", "2025-01-01", "2025-01-10", "0.05"),
+    ("Combined filter mid-term", "2024-06-01", "2024-06-15", "0.02")
+]

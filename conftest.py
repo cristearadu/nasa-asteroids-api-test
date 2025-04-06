@@ -2,12 +2,13 @@ import pytest
 import logging
 import os
 import http.client as http_client
+from faker import Faker
 from datetime import datetime
-from core.constants import ROOT_WORKING_DIRECTORY, LOGS_FOLDER
-from modules.backend_tests.helpers.helper_asteroids_data import HelperAsteroidData
+from core import ROOT_WORKING_DIRECTORY, LOGS_FOLDER
+from modules.backend_tests import HelperAsteroidData, HelperThread
 
 
-def pytest_configure():
+def pytest_configure(config):
     """
     pytest.logger.debug("This is a DEBUG message")       # Show in console, NOT in files
     pytest.logger.info("This is an INFO message")
@@ -22,7 +23,6 @@ def pytest_configure():
     log_dir = os.path.join(ROOT_WORKING_DIRECTORY, LOGS_FOLDER)
     os.makedirs(log_dir, exist_ok=True)
 
-    # if no log file is set -> generate a new one for the first worker
     if not os.environ.get("PYTEST_LOG_FILE"):
         timestamp = datetime.now().isoformat(timespec="seconds").replace(":", "-")
         log_file = os.path.join(log_dir, f"{timestamp}.log")
@@ -33,7 +33,6 @@ def pytest_configure():
     logger = logging.getLogger("pytest-logger")
     logger.setLevel(logging.DEBUG)
 
-    # just prevent duplicate handlers
     if not logger.handlers:
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
@@ -55,6 +54,11 @@ def pytest_configure():
 
     pytest.logger = logger
 
+    # register a custom marker: flaky + regression
+    config.addinivalue_line("markers", "flaky_regression: Combines regression + flaky retry for unstable tests")
+    setattr(pytest.mark, "flaky_regression",
+            pytest.mark.regression(pytest.mark.flaky(reruns=3, reruns_delay=1)))
+
 
 def pytest_runtest_call(item):
     """
@@ -66,5 +70,15 @@ def pytest_runtest_call(item):
 
 
 @pytest.fixture
-def asteroid_helper():
+def helper_asteroid():
     return HelperAsteroidData()
+
+
+@pytest.fixture
+def helper_thread():
+    return HelperThread(threads=20)
+
+
+@pytest.fixture
+def faker_fixture():
+    return Faker()

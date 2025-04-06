@@ -1,0 +1,4 @@
+from modules.backend_tests.controllers.asteroid_api_controller import AsteroidAPIController
+from modules.backend_tests.general.request_builder_asteroids import AsteroidRequestBuilder
+from modules.backend_tests.helpers.helper_asteroids_data import HelperAsteroidData
+from modules.backend_tests.helpers.helper_thread import HelperThread
