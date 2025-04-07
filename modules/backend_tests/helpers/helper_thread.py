@@ -4,6 +4,9 @@ import pytest
 
 
 class HelperThread:
+    """
+    Utility class to simulate concurrent load on the Asteroids API using threading.
+    """
     def __init__(self, threads=20):
         self.threads = threads
 
@@ -14,8 +17,15 @@ class HelperThread:
         expected_failure=HTTPStatusCodes.SERVICE_UNAVAILABLE.value
     ):
         """
-        Runs the given request function concurrently across N threads.
-        Returns a tuple: (successes, failures, others)
+        Executes the provided request function in parallel across multiple threads.
+
+        Args:
+            request_fn (Callable): The function to call in each thread. Must return a status code.
+            expected_success (int): Expected HTTP status code for a successful request.
+            expected_failure (int): Expected HTTP status code for a failed (rate-limited) request.
+
+        Returns:
+            Tuple[int, int, int]: A count of (successes, failures, unexpected responses).
         """
         successes, failures, others = 0, 0, 0
 
@@ -38,8 +48,19 @@ class HelperThread:
 
         return successes, failures, others
 
-    def simulate_asteroid_load(self, controller, expected_success=200, expected_failure=503):
-        """Built-in method for testing asteroid API load."""
+    def simulate_asteroid_load(self, controller, expected_success=HTTPStatusCodes.OK.value,
+                               expected_failure=HTTPStatusCodes.SERVICE_UNAVAILABLE.value):
+        """
+        Convenience method to simulate load against the Asteroids API using default parameters.
+
+        Args:
+            controller: An instance with `get_close_approach_data()` method.
+            expected_success (int): Expected HTTP 200 OK response code.
+            expected_failure (int): Expected HTTP 503 rate-limited response code.
+
+        Returns:
+            Tuple[int, int, int]: A count of (successes, failures, unexpected responses).
+        """
 
         def make_call():
             response = controller.get_close_approach_data({})

@@ -3,6 +3,12 @@ import time
 
 
 def retry(max_retries=3, delay=2):
+    """
+    Decorator to automatically retry a function upon failure.
+
+    Retries the wrapped function up to `max_retries` times with a delay between attempts,
+    handling common exceptions like AssertionError, ValueError, and ConnectionError.
+    """
     def decorator_retry(func):
         @functools.wraps(func)
         def wrapper_retry(*args, **kwargs):

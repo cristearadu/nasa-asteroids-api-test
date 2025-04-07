@@ -18,6 +18,7 @@ class HTTPStatusCodes(Enum):
 
 
 class ResponseKeys(Enum):
+    """Top-level response keys returned"""
     COUNT = "count"
     DATA = "data"
     MESSAGE = "message"
@@ -25,6 +26,7 @@ class ResponseKeys(Enum):
 
 
 class AsteroidDataFields(IntEnum):
+    """Index mapping for asteroid data rows in the 'data' list."""
     DES = 0              # Designation
     ORB = 1              # Orbit ID
     JD = 2               # Julian Date
@@ -41,11 +43,13 @@ class AsteroidDataFields(IntEnum):
 
 
 class KindValues(str, Enum):
+    """Enum for valid object kind filters in CAD API: asteroid, comet, or planet"""
     ASTEROID = "a"
     COMET = "c"
     PLANET = "p"  # currently unsupported, returns 400
 
 
+# JSON Schema definition for top-level structure
 ASTEROID_API_SCHEMA = {
     "type": "object",
     "required": [
@@ -81,6 +85,7 @@ ASTEROID_API_SCHEMA = {
 
 
 class CadEntry(BaseModel):
+    """Represents a single Close-Approach Data (CAD) entry"""
     des: str
     orbit_id: str
     jd: Union[str, float]
