@@ -3,6 +3,12 @@ from core import HTTPStatusCodes, retry
 
 
 class HelperAsteroidData:
+    """
+    Utility class to fetch and validate asteroid API responses.
+
+    Handles GET requests to the close-approach endpoint and asserts response status codes.
+    Retries on failure to reduce flakiness in tests.
+    """
     def __init__(self):
         self.controller = AsteroidAPIController()
 

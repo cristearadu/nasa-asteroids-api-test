@@ -1,6 +1,7 @@
 import os
 from enum import Enum, IntEnum
-
+from typing import Optional, Union
+from pydantic import BaseModel
 
 ROOT_WORKING_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGS_FOLDER = 'output'
@@ -17,6 +18,7 @@ class HTTPStatusCodes(Enum):
 
 
 class ResponseKeys(Enum):
+    """Top-level response keys returned"""
     COUNT = "count"
     DATA = "data"
     MESSAGE = "message"
@@ -24,6 +26,7 @@ class ResponseKeys(Enum):
 
 
 class AsteroidDataFields(IntEnum):
+    """Index mapping for asteroid data rows in the 'data' list."""
     DES = 0              # Designation
     ORB = 1              # Orbit ID
     JD = 2               # Julian Date
@@ -40,20 +43,63 @@ class AsteroidDataFields(IntEnum):
 
 
 class KindValues(str, Enum):
+    """Enum for valid object kind filters in CAD API: asteroid, comet, or planet"""
     ASTEROID = "a"
     COMET = "c"
     PLANET = "p"  # currently unsupported, returns 400
 
 
+# JSON Schema definition for top-level structure
 ASTEROID_API_SCHEMA = {
     "type": "object",
+    "required": [
+        ResponseKeys.COUNT.value,
+        ResponseKeys.DATA.value,
+        ResponseKeys.SIGNATURE.value
+    ],
     "properties": {
         ResponseKeys.COUNT.value: {"type": "integer"},
-        ResponseKeys.DATA.value: {"type": "array"},
-        ResponseKeys.SIGNATURE.value: {"type": "object"},
-    },
-    "required": [ResponseKeys.COUNT.value, ResponseKeys.SIGNATURE.value]
+        ResponseKeys.DATA.value: {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "anyOf": [
+                        {"type": "string"},
+                        {"type": "number"},
+                        {"type": "null"}
+                    ]
+                }
+            }
+        },
+        ResponseKeys.SIGNATURE.value: {
+            "type": "object",
+            "required": ["version", "source"],
+            "properties": {
+                "version": {"type": "string"},
+                "source": {"type": "string"}
+            }
+        }
+    }
 }
+
+
+class CadEntry(BaseModel):
+    """Represents a single Close-Approach Data (CAD) entry"""
+    des: str
+    orbit_id: str
+    jd: Union[str, float]
+    cd: str
+    dist: str
+    dist_min: str
+    dist_max: str
+    v_rel: str
+    v_inf: str
+    t_sigma_f: str
+    h: str
+    diameter: Optional[float] = None
+    diameter_sigma: Optional[float] = None
+
 
 # Pattern to match fullname field, e.g., '       (2024 AV2)' or '(433 Eros)'
 FULLNAME_REGEX_PATTERN = r".*(\([^\)]+\))?$"

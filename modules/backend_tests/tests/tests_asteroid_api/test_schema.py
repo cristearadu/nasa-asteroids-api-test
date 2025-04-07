@@ -1,25 +1,44 @@
 import pytest
 from jsonschema import validate, ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
-from core import ASTEROID_API_SCHEMA, ResponseKeys, AsteroidDataFields
+from core import ASTEROID_API_SCHEMA, AsteroidDataFields
 from modules.backend_tests import AsteroidRequestBuilder, VALID_DATA_TYPES_DATES
+
+
+from core import CadEntry, ResponseKeys
 
 
 @pytest.mark.smoke
 @pytest.mark.validation
 @pytest.mark.flaky_regression
 def test_response_schema(helper_asteroid):
-    """Validate overall response schema using JSON schema validation."""
+    """Validate overall response schema using JSON schema and pydantic validation."""
     schema = ASTEROID_API_SCHEMA
-    pytest.logger.info("Validating response against schema...")
+    pytest.logger.info("Validating response against JSON schema and CadEntry...")
 
     result = helper_asteroid.fetch_data()
+
+    # validate using JSON Schema
     try:
         validate(instance=result, schema=schema)
-        pytest.logger.info("Schema validation passed.")
+        pytest.logger.info("JSON Schema validation passed.")
     except ValidationError as e:
-        pytest.logger.error(f"Schema validation failed: {e}")
-        pytest.fail(f"Schema validation failed: {e}")
+        pytest.logger.error(f"JSON Schema validation failed: {e}")
+        pytest.fail(f"JSON Schema validation failed: {e}")
+
+    # validate each row using Pydantic by converting list to dict
+    fields = result.get("fields", [])
+    data = result.get(ResponseKeys.DATA.value, [])
+
+    try:
+        for row in data:
+            entry_dict = dict(zip(fields, row))
+            CadEntry.model_validate(entry_dict)
+        pytest.logger.info("Pydantic CadEntry validation passed.")
+    except PydanticValidationError as e:
+        pytest.logger.error(f"Pydantic CadEntry validation failed: {e}")
+        pytest.fail(f"Pydantic CadEntry validation failed: {e}")
 
 
 @pytest.mark.validation

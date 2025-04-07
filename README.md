@@ -134,6 +134,7 @@ If builder logic grows more complex or shared prebuilt queries are needed, a fix
 | `test_invalid_queries_return_400`               | Error Handling       | `test_errors.py`                  | Validates the API returns 400 on invalid `date_min`, negative `dist_max` values, and passing string to `v-inf`  |
 | `test_response_schema`                          | Schema Validation    | `test_schema.py`                  | Validates response JSON matches expected schema                                                                 |
 | `test_data_fields_have_expected_types`          | Schema Validation    | `test_schema.py`                  | Asserts each field type matches its defined type                                                                |
+| `test_randomized_param_schema_validation`       | Schema Validation    | `test_randomized_param_schema_validation.py` | Validates schema integrity using randomized valid date ranges and fields                                |
 | `test_simulate_rate_limit`                      | Performance          | `test_performance.py`             | Simulates burst traffic to confirm rate limiting behavior                                                       |
 | `test_smoke_valid_date_filter_returns_data`     | Filtering            | `test_filtering.py`               | Ensures valid date range returns expected asteroids                                                             |
 | `test_filter_by_distance`                       | Filtering            | `test_filtering.py`               | Verifies asteroid filtering by max distance                                                                     |
@@ -153,7 +154,7 @@ If builder logic grows more complex or shared prebuilt queries are needed, a fix
 | `test_cd_field_is_present_and_not_empty`       | Validation           | `test_close_approach_date.py`      | Ensures every entry contains a non-empty close-approach date field                                           |
 | `test_cd_within_requested_date_range`          | Validation           | `test_close_approach_date.py`      | Confirms all 'cd' values fall within the user-requested date range                                          |
 | `test_cd_values_are_unique`                    | Validation / Smoke   | `test_close_approach_date.py`      | Checks that 'cd' values in the default response are unique                                                  |
-
+| `test_boundary_conditions`                       | Validation / Edge Case | `test_boundary_filters.py`        | Parameterized test to validate lower/upper bounds for `dist-min`, `dist-max`, `v-inf`, `h-max`, and diameter field presence |
 ---
 
 ## 📸 Report Previews

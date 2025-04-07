@@ -1,4 +1,10 @@
 class AsteroidRequestBuilder:
+    """
+       Simple builder class to construct query parameters for the NASA asteroid API.
+
+       Supports chaining filters like date range, distance, velocity, magnitude, and extras like diameter or fullname.
+       Call `.build()` at the end to get the full set of params.
+   """
     def __init__(self):
         self.params = {}
 

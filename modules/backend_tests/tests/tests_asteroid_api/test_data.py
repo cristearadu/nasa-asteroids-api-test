@@ -70,3 +70,11 @@ INVALID_QUERIES_WITH_EXPECTED_MSG = [
         "query parameter was not recognized"
     ),
 ]
+
+BOUNDARY_TEST_CASES = [
+    ("Distance Min = 0", "dist_min", 0, 4, lambda val: float(val) >= 0),
+    ("Distance Max = 1", "dist_max", 1, 4, lambda val: float(val) <= 1),
+    ("H Max = 0", "h_max", 0, 10, lambda val: float(val) <= 0),
+    ("V-inf Max = 0", "v_inf_max", 0, 8, lambda val: float(val) <= 0),
+    ("Diameter Field Present", "diameter", None, 11, lambda val: True)  # checks length in test
+]
